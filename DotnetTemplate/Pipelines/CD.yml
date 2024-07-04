@@ -1,0 +1,56 @@
+parameters:
+- name: azureSubscription  
+  type: string
+  default: '' 
+- name: acrName
+  type: string
+  default: ''
+- name: imageName
+  type: string
+  default: ''
+- name: containerAppName
+  type: string
+  default: ''
+- name: resourceGroup
+  type: string
+  default: ''
+- name: repository
+  type: string
+  default: ''
+
+trigger:
+  - "main"
+
+resources:
+  repositories:
+    - repository: CI_CD
+      type: git
+      name: CI_CD
+      ref: main
+
+variables:
+  dockerFile: '**/Dockerfile'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: build
+    displayName: "Build"
+    jobs:
+      - template: jobs/job-build-push-docker.yml
+        parameters:
+          AzureSubscription: ${{parameters.azureSubscription}}
+          AcrName: ${{parameters.acrName}}
+          Repository: ${{parameters.repository}}
+          DockerFile: ${{variables.dockerFile}}
+  - stage: deploy
+    displayName: "Deploy"
+    jobs:
+      - template: jobs/job-deploy-docker-aca.yml
+        parameters:
+          AzureSubscription: ${{parameters.azureSubscription}}
+          AcrName: ${{parameters.acrName}}
+          ImageName: ${{parameters.imageName}}
+          ContainerAppName: ${{parameters.containerAppName}}
+          ResourceGroup: ${{parameters.resourceGroup}}

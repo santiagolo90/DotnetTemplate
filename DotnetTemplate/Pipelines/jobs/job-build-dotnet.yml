@@ -1,0 +1,10 @@
+jobs:
+  # Build backend project
+  - job: Build
+    displayName: 'Build'
+    steps:
+    - template: steps-restore-build-publish-dotnet-app.yml@CI_CD
+      parameters:
+        Project: 'DotnetTemplate'
+        PublishBuildArtifacts: false   
+

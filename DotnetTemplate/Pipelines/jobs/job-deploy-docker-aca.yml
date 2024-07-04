@@ -1,0 +1,23 @@
+parameters:
+  - name: AzureSubscription
+    type: string
+  - name: AcrName
+    type: string
+  - name: ImageName
+    type: string
+  - name: ContainerAppName
+    type: string
+  - name: ResourceGroup
+    type: string
+  
+jobs:
+  - job: Deploy
+    displayName: 'Deploy to Azure Container App'
+    steps:
+      - template: steps-deploy-swap-aca.yml@CI_CD
+        parameters:
+          azureSubscription: ${{parameters.AzureSubscription}}
+          acrName: ${{parameters.AcrName}}
+          imageName: ${{parameters.ImageName}}
+          containerAppName: ${{parameters.ContainerAppName}}
+          resourceGroup: ${{parameters.ResourceGroup}}
